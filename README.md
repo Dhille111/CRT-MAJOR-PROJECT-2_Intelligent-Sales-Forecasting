@@ -2,6 +2,8 @@
 
 An end-to-end sales forecasting and inventory operations application built using Python machine learning models and served on a high-fidelity, interactive web dashboard. 
 
+🚀 **Live Demo URL**: [https://crt-major-project-2-intelligent-sales-xriq.onrender.com/](https://crt-major-project-2-intelligent-sales-xriq.onrender.com/)
+
 The dashboard ingests, cleans, and merges Walmart's store sales data, trains predictive algorithms, projects a 6-month future demand, and derives actionable safety stock metrics and reorder points.
 
 ---
