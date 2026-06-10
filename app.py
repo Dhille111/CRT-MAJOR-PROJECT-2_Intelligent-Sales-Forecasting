@@ -187,6 +187,103 @@ def get_inventory_insights():
         
     return jsonify(insights)
 
+@app.route("/api/reports/forecast/download")
+def download_forecast_csv():
+    import io
+    from flask import Response
+    
+    store = request.args.get("store", "all")
+    model_name = request.args.get("model", "RF")
+    
+    if store == "all":
+        df_chart = future_date_aggr
+    else:
+        try:
+            store_val = int(store)
+            df_chart = future_store_date_aggr[future_store_date_aggr['Store'] == store_val]
+        except ValueError:
+            return jsonify({"error": "Invalid store parameter"}), 400
+            
+    if df_chart.empty:
+        return "No data available", 400
+        
+    output = io.StringIO()
+    output.write("Date,Forecasted_Sales_INR,Forecasted_Sales_USD\n")
+    
+    for idx, row in df_chart.iterrows():
+        d_str = shift_date_string(row['Date'])
+        val_usd = float(row[model_name])
+        val_inr = val_usd * 83.0
+        output.write(f"{d_str},{val_inr:.2f},{val_usd:.2f}\n")
+        
+    csv_data = output.getvalue()
+    output.close()
+    
+    filename = f"demand_forecast_store_{store}_{model_name}.csv"
+    return Response(
+        csv_data,
+        mimetype="text/csv",
+        headers={"Content-disposition": f"attachment; filename={filename}"}
+    )
+
+@app.route("/api/reports/inventory/download")
+def download_inventory_json():
+    import json
+    from flask import Response
+    
+    insights = []
+    for idx, row in inventory_base.iterrows():
+        store = int(row['Store'])
+        dept = int(row['Dept'])
+        avg_sales = float(row['Avg_Sales'])
+        std_sales = float(row['Std_Sales'])
+        size = int(row['Size'])
+        category = row['Category']
+        
+        safety_stock = round(1.65 * std_sales, 2)
+        rop = round(avg_sales + safety_stock, 2)
+        
+        seed_factor = ((store * dept) % 9) / 8.0
+        current_stock = round(avg_sales * (0.4 + 1.8 * seed_factor), 2)
+        
+        if current_stock < safety_stock:
+            status = "Stockout Risk"
+            reorder_qty = round(rop * 1.5 - current_stock, 2)
+            action = f"CRITICAL: Expedite shipment of {reorder_qty:.1f} units immediately."
+        elif current_stock < rop:
+            status = "Reorder Required"
+            reorder_qty = round(rop - current_stock, 2)
+            action = f"Place purchase order for {reorder_qty:.1f} units."
+        elif current_stock > rop * 2.2:
+            status = "Overstocked"
+            action = "Suspend replenishment. Implement markdown promotion to clear excess."
+        else:
+            status = "Optimal"
+            action = "No action required. Maintain current levels."
+            
+        avg_sales_inr = round(avg_sales * 83.0, 2)
+        
+        insights.append({
+            "Store": store,
+            "Dept": dept,
+            "Category": category,
+            "Avg_Weekly_Sales_INR": avg_sales_inr,
+            "Avg_Weekly_Sales_USD": round(avg_sales, 2),
+            "Safety_Stock_Units": safety_stock,
+            "Reorder_Point_Units": rop,
+            "Current_Stock_Units": current_stock,
+            "Status": status,
+            "Recommended_Action": action,
+            "Store_Size_SqFt": size
+        })
+        
+    json_data = json.dumps(insights, indent=2)
+    return Response(
+        json_data,
+        mimetype="application/json",
+        headers={"Content-disposition": "attachment; filename=inventory_audit_report.json"}
+    )
+
 @app.route("/api/predict", methods=["POST"])
 def predict_live():
     try:
