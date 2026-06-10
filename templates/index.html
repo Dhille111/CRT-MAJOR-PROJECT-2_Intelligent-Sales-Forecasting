@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Sales Forecasting System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="light-mode">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20V10M18 20V4M6 20V14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>Intelligent Sales</h1>
+                    <span class="subtext">Forecasting System</span>
+                </div>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#" class="nav-item active" data-target="tab-overview" id="nav-overview">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-forecast-details" id="nav-forecast-details">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    <span>Sales Forecasting</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-store-perf" id="nav-store-perf">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10H3M21 6H3M21 14H3M21 18H3"/></svg>
+                    <span>Store Performance</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-product-analysis" id="nav-product-analysis">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <span>Product Analysis</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-inventory" id="nav-inventory">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                    <span>Inventory Optimization</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-alerts" id="nav-alerts">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span>Alerts & Insights</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-reports" id="nav-reports">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-target="tab-predictor" id="nav-predictor">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <!-- Sidebar Project Summary Card -->
+            <div class="project-summary-card">
+                <h5>Project Summary</h5>
+                <p>This dashboard uses ML models to forecast sales, optimize inventory and provide actionable insights.</p>
+                <div class="summary-meta">
+                    <div>Model Used: <strong id="sidebar-model-text">RandomForest</strong></div>
+                    <div>Last Trained: <strong id="sidebar-train-date">10-Jun-2026</strong></div>
+                    <div>Data Source: <strong>Walmart Dataset</strong></div>
+                </div>
+                <!-- 3D Vector Isometric Illustration -->
+                <div class="isometric-illustration">
+                    <svg width="100%" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Iso blocks grid -->
+                        <path d="M60 20L85 32L60 44L35 32L60 20Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)"/>
+                        
+                        <!-- Purple glowing bar -->
+                        <path d="M45 42L45 57L55 62L55 47L45 42Z" fill="#8b5cf6" opacity="0.8"/>
+                        <path d="M55 47L55 62L65 57L65 42L55 47Z" fill="#a78bfa" opacity="0.8"/>
+                        <path d="M45 42L55 47L65 42L55 37L45 42Z" fill="#c084fc"/>
+                        
+                        <!-- Blue glowing bar -->
+                        <path d="M65 30L65 50L75 55L75 35L65 30Z" fill="#3b82f6" opacity="0.8"/>
+                        <path d="M75 35L75 55L85 50L85 30L75 35Z" fill="#60a5fa" opacity="0.8"/>
+                        <path d="M65 30L75 35L85 30L75 25L65 30Z" fill="#93c5fd"/>
+                        
+                        <!-- Orange trend line -->
+                        <path d="M40 45L55 35L70 28L88 18" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="88" cy="18" r="3" fill="#fbbf24"/>
+                    </svg>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Loading Spinner -->
+            <div class="loader-overlay" id="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading Sales Intelligence...</p>
+            </div>
+
+            <!-- Page Header -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h2 id="page-title">Sales Forecasting Dashboard</h2>
+                </div>
+                <div class="header-actions">
+                    <!-- Dashboard Filter Dropdowns -->
+                    <div class="filter-group" id="global-filters">
+                        <!-- Store dropdown -->
+                        <div class="select-wrapper">
+                            <label for="store-select">Store</label>
+                            <select id="store-select">
+                                <option value="all" selected>All Stores</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Date range display mockup -->
+                        <div class="date-range-display">
+                            <span class="label">Date Range</span>
+                            <div class="value-container">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <span id="date-range-text">01-02-2021 &rarr; 30-07-2024</span>
+                            </div>
+                        </div>
+
+                        <!-- Hidden elements for chart filtering inside backend logic -->
+                        <select id="dept-select" style="display: none;"><option value="all">all</option></select>
+                        <select id="model-select" style="display: none;">
+                            <option value="RF" selected>RF</option>
+                            <option value="HGB">HGB</option>
+                            <option value="LR">LR</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB CONTAINER: OVERVIEW (EXACT MATCH) -->
+            <div id="tab-overview" class="tab-content active-tab">
+                <!-- KPI Card Grid -->
+                <div class="kpi-grid">
+                    <!-- Total Sales (Actual) -->
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon-container bg-blue-glow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div class="kpi-data">
+                            <span class="kpi-title">Total Sales (Actual)</span>
+                            <h3 class="kpi-value" id="kpi-total-sales">₹0.00</h3>
+                            <span class="kpi-trend text-success"><span class="arrow">▲</span> 12.6% <span class="trend-sub">vs last year</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Forecasted Sales -->
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon-container bg-green-glow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3v18h18"></path>
+                                <path d="m19 9-5 5-4-4-3 3"></path>
+                            </svg>
+                        </div>
+                        <div class="kpi-data">
+                            <span class="kpi-title">Forecasted Sales</span>
+                            <h3 class="kpi-value" id="kpi-forecast-sales">₹0.00</h3>
+                            <span class="kpi-trend text-success"><span class="arrow">▲</span> 14.3% <span class="trend-sub">vs last year</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Total Profit -->
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon-container bg-purple-glow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="4" height="10" rx="1"></rect>
+                                <rect x="10" y="3" width="4" height="18" rx="1"></rect>
+                                <rect x="17" y="7" width="4" height="14" rx="1"></rect>
+                            </svg>
+                        </div>
+                        <div class="kpi-data">
+                            <span class="kpi-title">Total Profit</span>
+                            <h3 class="kpi-value" id="kpi-profit">₹0.00</h3>
+                            <span class="kpi-trend text-success"><span class="arrow">▲</span> 9.8% <span class="trend-sub">vs last year</span></span>
+                        </div>
+                    </div>
+
+                    <!-- MAPE (Model Error) -->
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon-container bg-orange-glow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="6"></circle>
+                                <circle cx="12" cy="12" r="2"></circle>
+                            </svg>
+                        </div>
+                        <div class="kpi-data">
+                            <span class="kpi-title">MAPE (Model Error)</span>
+                            <h3 class="kpi-value" id="kpi-mape">8.45%</h3>
+                            <span class="kpi-trend text-success"><span class="arrow">▼</span> -2.15% <span class="trend-sub">vs last model</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Best Performing Store -->
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon-container bg-teal-glow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div class="kpi-data">
+                            <span class="kpi-title">Best Performing Store</span>
+                            <h3 class="kpi-value" id="kpi-best-store">Store 20</h3>
+                            <span class="kpi-trend text-secondary" id="kpi-best-store-sales">Sales: ₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 1: Line Chart & Vertical Bar Chart -->
+                <div class="dashboard-grid row-1">
+                    <!-- Line Chart: Actual vs Forecasted Sales (65% width) -->
+                    <div class="chart-card glass line-chart-card">
+                        <div class="chart-card-header">
+                            <h4>Actual vs Forecasted Sales</h4>
+                            <div class="chart-legend-top">
+                                <span class="legend-item"><span class="dot actual-dot"></span> Actual Sales</span>
+                                <span class="legend-item"><span class="dot forecast-dot"></span> Forecasted Sales</span>
+                            </div>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="actualVsPredictedChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart: Sales Forecast Next 6 Months (35% width) -->
+                    <div class="chart-card glass bar-chart-card">
+                        <div class="chart-card-header">
+                            <h4>Sales Forecast (Next 6 Months)</h4>
+                            <span class="chart-subtitle">Sales (INR)</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="futureForecastChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Category Donut, Top Stores, Heatmap -->
+                <div class="dashboard-grid row-2">
+                    <!-- Category Donut Chart -->
+                    <div class="chart-card glass category-card">
+                        <div class="chart-card-header">
+                            <h4>Sales by Category</h4>
+                        </div>
+                        <div class="donut-chart-container">
+                            <div class="canvas-container-donut">
+                                <canvas id="categorySalesChart"></canvas>
+                            </div>
+                            <!-- Side Legend list -->
+                            <div class="donut-legend" id="category-legend">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                        <div class="donut-summary-text">
+                            Total Sales: <strong id="category-total-val">₹0.00</strong>
+                        </div>
+                    </div>
+
+                    <!-- Top 5 Stores Bar Chart -->
+                    <div class="chart-card glass top-stores-card">
+                        <div class="chart-card-header">
+                            <h4>Top 5 Stores by Sales</h4>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="topStoresChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap Grid -->
+                    <div class="chart-card glass heatmap-card">
+                        <div class="chart-card-header">
+                            <h4>Sales Heatmap (Store vs Month)</h4>
+                        </div>
+                        <div class="heatmap-grid-scroll">
+                            <table class="heatmap-table" id="heatmap-table">
+                                <!-- Generated Dynamically -->
+                            </table>
+                        </div>
+                        <div class="heatmap-legend">
+                            <span>Low</span>
+                            <div class="heatmap-gradient-bar"></div>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Inventory Status Donut, Stockout Risk Table, Key Insights -->
+                <div class="dashboard-grid row-3">
+                    <!-- Inventory Status Overview -->
+                    <div class="chart-card glass inventory-donut-card">
+                        <div class="chart-card-header">
+                            <h4>Inventory Status Overview</h4>
+                        </div>
+                        <div class="donut-chart-container">
+                            <div class="canvas-container-donut">
+                                <canvas id="inventoryStatusChart"></canvas>
+                            </div>
+                            <div class="donut-legend" id="inventory-donut-legend">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stockout Risk Alert Table -->
+                    <div class="chart-card glass stockout-alerts-card">
+                        <div class="chart-card-header">
+                            <h4>Stockout Risk Alert</h4>
+                        </div>
+                        <div class="table-container">
+                            <table class="alerts-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Category</th>
+                                        <th>Store</th>
+                                        <th>Current Stock</th>
+                                        <th>Risk Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stockout-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Key Insights list -->
+                    <div class="chart-card glass insights-card">
+                        <div class="chart-card-header">
+                            <h4>Key Insights</h4>
+                        </div>
+                        <ul class="insights-list" id="insights-bullet-list">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: DETAILED SALES FORECASTING -->
+            <div id="tab-forecast-details" class="tab-content">
+                <div class="table-card glass">
+                    <div class="table-header">
+                        <h4>Out-of-Sample Weekly Forecast Timeline</h4>
+                        <p class="text-secondary">Predicted week-by-week sales values generated by the RandomForest model.</p>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table" id="forecast-timeline-table">
+                            <thead>
+                                <tr>
+                                    <th>Forecast Date</th>
+                                    <th>Day of Week</th>
+                                    <th>Forecast Value</th>
+                                    <th>Is Holiday</th>
+                                    <th>Season / Quarter</th>
+                                </tr>
+                            </thead>
+                            <tbody id="forecast-timeline-body">
+                                <!-- Populated dynamically in JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: STORE PERFORMANCE -->
+            <div id="tab-store-perf" class="tab-content">
+                <div class="table-card glass">
+                    <div class="table-header">
+                        <h4>Store Sales Rankings & Macro Averages</h4>
+                        <p class="text-secondary">Summary metrics showing total sales, average weekly sales, store size, and location indicators.</p>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table" id="store-ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Store Location</th>
+                                    <th>Total Historical Sales</th>
+                                    <th>Average Weekly Sales</th>
+                                    <th>Store Size</th>
+                                    <th>Store Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="store-ranking-body">
+                                <!-- Populated dynamically in JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: PRODUCT ANALYSIS -->
+            <div id="tab-product-analysis" class="tab-content">
+                <div class="table-card glass">
+                    <div class="table-header">
+                        <h4>Product Category Performance Distribution</h4>
+                        <p class="text-secondary">Categorized sales volume derived from mapped Walmart departments.</p>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Product Category</th>
+                                    <th>Total Sales Volume</th>
+                                    <th>Percentage Contribution</th>
+                                    <th>Department Range</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-analysis-body">
+                                <!-- Populated dynamically in JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: INVENTORY OPTIMIZATION GRID (PREVIOUS FUNCTIONALITY) -->
+            <div id="tab-inventory" class="tab-content">
+                <!-- Search & Filters -->
+                <div class="table-card glass">
+                    <div class="table-header flex-between">
+                        <div>
+                            <h4>Dynamic Inventory Reorder Points & Supply Chain Insights</h4>
+                            <p class="text-secondary">Calculated via Statistical Safety Stock limits ($Z=1.65$ for 95% service level) over 1-week lead times.</p>
+                        </div>
+                        <div class="table-search-group">
+                            <input type="text" id="inventory-search" placeholder="Search Store or Category...">
+                            <select id="inventory-status-filter">
+                                <option value="all">All Statuses</option>
+                                <option value="Stockout Risk">Stockout Risk</option>
+                                <option value="Reorder Required">Reorder Required</option>
+                                <option value="Optimal">Optimal</option>
+                                <option value="Overstocked">Overstocked</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table" id="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Dept</th>
+                                    <th>Category</th>
+                                    <th>Avg Weekly Sales</th>
+                                    <th>Safety Stock</th>
+                                    <th>Reorder Point (ROP)</th>
+                                    <th>Simulated Stock</th>
+                                    <th>Inventory Status</th>
+                                    <th>Recommended Supply Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <span id="inventory-showing-count">Showing 0 of 0 nodes</span>
+                        <div class="pagination">
+                            <button id="btn-prev-page" class="btn btn-sm">Prev</button>
+                            <span id="page-indicator">Page 1</span>
+                            <button id="btn-next-page" class="btn btn-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: ALERTS & INSIGHTS -->
+            <div id="tab-alerts" class="tab-content">
+                <div class="table-card glass">
+                    <div class="table-header">
+                        <h4>Critical Safety Alerts & Operational Warnings</h4>
+                        <p class="text-secondary">List of items currently in critical Stockout Risk status requiring immediate supply actions.</p>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table" id="alerts-grid-table">
+                            <thead>
+                                <tr>
+                                    <th>Store Location</th>
+                                    <th>Department</th>
+                                    <th>Product Category</th>
+                                    <th>Current Stock Level</th>
+                                    <th>Safety Stock Limit</th>
+                                    <th>Stock Shortage</th>
+                                    <th>Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alerts-grid-body">
+                                <!-- Populated dynamically in JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: REPORTS -->
+            <div id="tab-reports" class="tab-content">
+                <div class="reports-generation-box glass">
+                    <h4>Operations Report Generator</h4>
+                    <p class="text-secondary" style="margin-bottom: 1.5rem;">Generate executive demand forecasting, sales analytics, and inventory audit reports in CSV format.</p>
+                    
+                    <div class="report-options-grid">
+                        <div class="report-type-card glass">
+                            <h5>Demand Forecast Report</h5>
+                            <p class="text-secondary">Contains future predicted demand levels, holiday indicators, and macroeconomic indexes.</p>
+                            <button class="btn btn-primary" onclick="window.location.href='/api/charts/future-forecast?store=all&model=RF'">Download Forecast CSV</button>
+                        </div>
+                        <div class="report-type-card glass">
+                            <h5>Inventory Audit Report</h5>
+                            <p class="text-secondary">Contains safety stock limits, current simulated stock levels, and procurement alerts.</p>
+                            <button class="btn btn-primary" onclick="window.location.href='/api/inventory-insights'">Download Inventory JSON</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTAINER: SETTINGS (LIVE PREDICTOR FORM) -->
+            <div id="tab-predictor" class="tab-content">
+                <div class="predictor-grid">
+                    <!-- Form Card -->
+                    <div class="predictor-form-card glass">
+                        <div class="card-header">
+                            <h4>Real-Time Sales Demand Simulator</h4>
+                            <p class="text-secondary">Input variables to query live predictions across models.</p>
+                        </div>
+                        <form id="prediction-form" class="sim-form">
+                            <!-- Row 1: Core IDs -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="p-store">Store Location (1 - 45)</label>
+                                    <input type="number" id="p-store" min="1" max="45" value="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="p-dept">Department Number (1 - 99)</label>
+                                    <input type="number" id="p-dept" min="1" max="99" value="1" required>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Date and Calendar -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="p-date">Simulation Date (2021-2024)</label>
+                                    <input type="date" id="p-date" value="2023-11-23" required>
+                                </div>
+                                <div class="form-group checkbox-group">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="p-isholiday">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span class="checkbox-label">Active Holiday Week</span>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Store Details -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="p-type">Store Type Classification</label>
+                                    <select id="p-type">
+                                        <option value="A" selected>Type A (Large Regional)</option>
+                                        <option value="B">Type B (Medium Urban)</option>
+                                        <option value="C">Type C (Small Neighborhood)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="p-size">Store Size (Sq. Feet)</label>
+                                    <input type="number" id="p-size" min="1000" max="300000" value="151315" required>
+                                </div>
+                            </div>
+
+                            <!-- Section Header: Macroeconomic Indicators -->
+                            <h5 class="section-title">Macroeconomic & Climate Factors</h5>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="p-temp">Temperature (°F)</label>
+                                    <input type="number" id="p-temp" step="0.1" value="55.2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="p-fuel">Fuel Price ($/Gallon)</label>
+                                    <input type="number" id="p-fuel" step="0.001" value="3.52">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="p-cpi">Consumer Price Index (CPI)</label>
+                                    <input type="number" id="p-cpi" step="0.001" value="223.12">
+                                </div>
+                                <div class="form-group">
+                                    <label for="p-unemp">Unemployment Rate (%)</label>
+                                    <input type="number" id="p-unemp" step="0.001" value="7.25">
+                                </div>
+                            </div>
+
+                            <!-- Section Header: Promotions -->
+                            <div class="markdown-expand-btn" id="toggle-markdowns-btn">
+                                <span>Promotional Markdowns (Optional)</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            
+                            <div class="markdown-fields-container hidden-fields" id="markdown-fields">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="p-md1">MarkDown 1 (₹)</label>
+                                        <input type="number" id="p-md1" step="0.01" value="0.0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="p-md2">MarkDown 2 (₹)</label>
+                                        <input type="number" id="p-md2" step="0.01" value="0.0">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="p-md3">MarkDown 3 (₹)</label>
+                                        <input type="number" id="p-md3" step="0.01" value="0.0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="p-md4">MarkDown 4 (₹)</label>
+                                        <input type="number" id="p-md4" step="0.01" value="0.0">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="p-md5">MarkDown 5 (₹)</label>
+                                        <input type="number" id="p-md5" step="0.01" value="0.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                                Generate Predictions
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Predictions Display Card -->
+                    <div class="predictor-results-card glass">
+                        <div class="card-header">
+                            <h4>Simulation Results</h4>
+                            <p class="text-secondary">Comparative forecast breakdown from our statistical engine.</p>
+                        </div>
+                        
+                        <div class="results-display-area">
+                            <div class="primary-result-box bg-purple-glow">
+                                <span class="result-label">Recommended Demand Forecast (RandomForest)</span>
+                                <h2 class="result-value" id="res-val-rf">₹0.00</h2>
+                                <p class="result-subtext" id="res-desc">Enter factors and click simulate</p>
+                            </div>
+
+                            <div class="model-results-row">
+                                <div class="model-res-card">
+                                    <span class="model-name">HistGradientBoosting</span>
+                                    <h4 id="res-val-hgb">₹0.00</h4>
+                                    <span class="model-accuracy-sub">91.07% accuracy</span>
+                                </div>
+                                <div class="model-res-card">
+                                    <span class="model-name">LinearRegression</span>
+                                    <h4 id="res-val-lr">₹0.00</h4>
+                                    <span class="model-accuracy-sub">9.25% accuracy</span>
+                                </div>
+                            </div>
+
+                            <div class="result-chart-wrapper">
+                                <h5>Forecast Discrepancy Across Algorithms</h5>
+                                <div class="canvas-container">
+                                    <canvas id="livePredictionComparisonChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Footer -->
+            <footer class="app-footer">
+                <div class="footer-left">
+                    Model Used: <strong>RandomForest Regressor</strong> | Last Updated: <strong>10-Jun-2026 12:15 PM</strong> | Data Source: <strong>Walmart Sales Dataset</strong>
+                </div>
+                <div class="footer-right">
+                    &copy; 2026 Intelligent Sales Forecasting System
+                </div>
+            </footer>
+        </main>
+    </div>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
