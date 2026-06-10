@@ -26,6 +26,50 @@ The dashboard ingests, cleans, and merges Walmart's store sales data, trains pre
 
 ---
 
+## 📸 Dashboard Screenshots & Outputs
+
+### 1. Operations Overview Dashboard
+The main landing page displays high-level operations KPIs in Indian Rupees (INR), actual vs forecasted sales line comparison, category revenue donuts, top store charts, and a dynamic store-month heatmap.
+
+![Operations Overview](assets/overview_tab.png)
+
+### 2. Weekly Forecast Timeline
+An out-of-sample forecast datatable listing predicted weekly demand by date, seasons, day of week, and holiday flags.
+
+![Weekly Forecast Timeline](assets/forecast_details_tab.png)
+
+### 3. Store Sales Rankings & Performance
+Ranked listing of stores with total revenue, average weekly sales, sizes, and classifications.
+
+![Store Performance](assets/store_perf_tab.png)
+
+### 4. Product Category Contribution
+Distribution percentages showing how departments map to core inventory categories.
+
+![Product Analysis](assets/product_analysis_tab.png)
+
+### 5. Inventory Optimization & Safety Stock
+Statistical reorder limits, safety stocks, simulated stock levels, and procurement action recommendations.
+
+![Inventory Optimization](assets/inventory_tab.png)
+
+### 6. Critical Stockout Alerts
+List of store-department nodes experiencing critical stock shortages (where current stock is below safety stock limits).
+
+![Alerts & Insights](assets/alerts_tab.png)
+
+### 7. Executive Reports Generator
+Panel for downloading native forecast demand CSV sheets and inventory audit JSON logs directly to your machine.
+
+![Reports Tab](assets/reports_tab.png)
+
+### 8. Real-Time Demand Simulator
+A simulation interface allowing managers to input variables (date, location, markdowns in Rupees, weather parameters) to trigger real-time predictions.
+
+![Predictor Tab](assets/predictor_tab.png)
+
+---
+
 ## 🛠️ Tech Stack & Dependencies
 
 - **Backend Web Server**: Flask 3.1
