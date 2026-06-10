@@ -80,6 +80,7 @@ def get_stats():
         "metrics": metrics,
         
         "category_sales": stats_dict["category_sales"],
+        "store_perf": stats_dict["store_perf"],
         "heatmap_data": stats_dict["heatmap_data"],
         "top_5_stores": stats_dict["top_5_stores"],
         "inventory_status_overview": stats_dict["inventory_status_overview"],
