@@ -9,8 +9,9 @@ from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegresso
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # Define paths
-base_path = r"c:\Users\user\Desktop\All_projects\CRT (TASKS)\CRT MAJOR PROJECT 2\Walmart Sales Forecasting Dataset"
-output_dir = r"c:\Users\user\Desktop\All_projects\CRT (TASKS)\CRT MAJOR PROJECT 2\models"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+base_path = os.path.join(BASE_DIR, "Walmart Sales Forecasting Dataset")
+output_dir = os.path.join(BASE_DIR, "models")
 os.makedirs(output_dir, exist_ok=True)
 
 def get_category(dept):

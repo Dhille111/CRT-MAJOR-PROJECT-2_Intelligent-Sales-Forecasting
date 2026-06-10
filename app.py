@@ -7,7 +7,8 @@ from flask import Flask, jsonify, request, render_template
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 # Paths
-MODELS_DIR = r"c:\Users\user\Desktop\All_projects\CRT (TASKS)\CRT MAJOR PROJECT 2\models"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, "models")
 
 # Global Variables to store cached data
 models = {}
